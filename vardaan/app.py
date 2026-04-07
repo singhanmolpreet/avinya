@@ -7,7 +7,7 @@ st.set_page_config(
 )
 
 st.title("🩺 Vardaan AI")
-st.subheader("Early Breast Cancer Risk Prediction System")
+st.subheader("Early Cancer Risk Prediction System")
 
 st.markdown("""
 Welcome to Vardaan AI. Use the sidebar to navigate:
