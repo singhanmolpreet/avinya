@@ -1,2 +1,2 @@
-## Vardaan AI Breast Cancer Prediction System
+## Vardaan AI Cancer Prediction System
 
