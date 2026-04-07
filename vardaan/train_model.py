@@ -19,15 +19,9 @@ X_train, X_test, Y_train, y_test=train_test_split(X, Y, test_size=0.2, random_st
 # print(X_test)
 
 model = XGBClassifier(
-    n_estimators=50,
-    max_depth=2,
-    learning_rate=0.05,
-    min_child_weight=5,
-    subsample=0.8,
-    colsample_bytree=0.8,
-    reg_alpha=1,
-    reg_lambda=2,
-    gamma=1,
+    n_estimators=100,
+    max_depth=4,
+    learning_rate=0.1,
     random_state=42,
     eval_metric='logloss'
 )
