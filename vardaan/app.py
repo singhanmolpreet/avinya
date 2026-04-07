@@ -25,23 +25,28 @@ html, body, [class*="css"] {
     gap: 6px;
     border: 1px solid rgba(0,0,0,0.06);
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+     background-color: var(--background-color);
+    border: 1px solid var(--secondary-background-color);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .metric-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
-.metric-card.total  { background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%); }
-.metric-card.high   { background: linear-gradient(135deg, #fff0f0 0%, #ffe0e0 100%); }
-.metric-card.low    { background: linear-gradient(135deg, #f0fff4 0%, #d8f5e3 100%); }
-.metric-card.rate   { background: linear-gradient(135deg, #fffbf0 0%, #fef3cd 100%); }
 
-.metric-label {
+
+.metric-card.total  { background-color: rgba(59, 91, 219, 0.1); }
+.metric-card.high   { background-color: rgba(224, 49, 49, 0.1); }
+.metric-card.low    { background-color: rgba(47, 158, 68, 0.1); }
+.metric-card.rate   { background-color: rgba(230, 119, 0, 0.1); }
+
+    .metric-label {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.55;
+    color: var(--text-color);
+    opacity: 0.7;
 }
 .metric-value {
     font-family: 'Syne', sans-serif;
@@ -49,6 +54,8 @@ html, body, [class*="css"] {
     font-weight: 800;
     line-height: 1;
     margin: 4px 0 2px;
+            color: var(--text-color);
+    opacity: 0.6;
 }
 .metric-card.total .metric-value { color: #3b5bdb; }
 .metric-card.high  .metric-value { color: #e03131; }
@@ -65,17 +72,18 @@ html, body, [class*="css"] {
 .hero-header {
     padding: 36px 0 8px;
     margin-bottom: 4px;
+           
 }
 .hero-title {
     font-family: 'Syne', sans-serif;
-    font-size: 36px;
+    font-size: 40px;
     font-weight: 800;
     letter-spacing: -0.5px;
     color: inherit;
     margin: 0;
 }
 .hero-sub {
-    font-size: 15px;
+    font-size: 20px;
     opacity: 0.55;
     margin-top: 4px;
     font-weight: 400;
@@ -147,7 +155,7 @@ except FileNotFoundError:
 # ── Hero Header ───────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero-header">
-  <p class="hero-title">🩺 Vardaan AI</p>
+ <H1> <p class="hero-title">🩺 Vardaan AI</p></H1>
   <p class="hero-sub">Early Cancer Risk Prediction System &nbsp;·&nbsp; Patient Intelligence Dashboard</p>
 </div>
 """, unsafe_allow_html=True)
@@ -171,7 +179,7 @@ with c2:
     <div class="metric-card high">
       <div class="metric-label">High Risk</div>
       <div class="metric-value">{high_risk}</div>
-      <div class="metric-sub">Label = 1 (cancer risk)</div>
+      <div class="metric-sub">Cancer risk patients</div>
     </div>""", unsafe_allow_html=True)
 
 with c3:
@@ -179,7 +187,7 @@ with c3:
     <div class="metric-card low">
       <div class="metric-label">Low Risk</div>
       <div class="metric-value">{low_risk}</div>
-      <div class="metric-sub">Label = 0 (normal)</div>
+      <div class="metric-sub">Normal patients</div>
     </div>""", unsafe_allow_html=True)
 
 with c4:
@@ -204,66 +212,6 @@ with n2:
 with n3:
     if st.button("➕  Add Patient", use_container_width=True):
         st.switch_page("pages/3_Add_Patient.py")
-
-
-# ── Risk breakdown bar ─────────────────────────────────────────────────────────
-if data_ok and total > 0:
-    st.markdown("<div class='section-title'>Risk Distribution</div>", unsafe_allow_html=True)
-
-    low_pct  = round(low_risk  / total * 100, 1)
-    high_pct = round(high_risk / total * 100, 1)
-
-    st.markdown(f"""
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px;">
-      <span style="font-size:13px; font-weight:600; color:#2f9e44; min-width:90px;">Low Risk {low_pct}%</span>
-      <div style="flex:1; background:#f0f0f0; border-radius:999px; height:14px; overflow:hidden;">
-        <div style="display:flex; height:100%;">
-          <div style="width:{low_pct}%; background:linear-gradient(90deg,#40c057,#2f9e44); border-radius:999px 0 0 999px;"></div>
-          <div style="width:{high_pct}%; background:linear-gradient(90deg,#fa5252,#e03131); border-radius:0 999px 999px 0;"></div>
-        </div>
-      </div>
-      <span style="font-size:13px; font-weight:600; color:#e03131; min-width:90px; text-align:right;">High Risk {high_pct}%</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── Recent high-risk patients ──────────────────────────────────────────────
-    st.markdown("<div class='section-title'>⚠️ High-Risk Patients (latest reading)</div>", unsafe_allow_html=True)
-
-    hr_patients = latest[latest["label"] == 1][
-        ["patient_id", "year", "glucose", "bmi", "haemoglobin", "wbc", "ca_125"]
-    ].sort_values("ca_125", ascending=False).head(10).reset_index(drop=True)
-
-    hr_patients.columns = ["Patient ID", "Year", "Glucose", "BMI", "Haemoglobin", "WBC", "CA-125"]
-
-    st.dataframe(
-        hr_patients.style
-            .format({"Glucose": "{:.1f}", "BMI": "{:.1f}", "Haemoglobin": "{:.1f}",
-                     "WBC": "{:,.0f}", "CA-125": "{:.1f}"})
-            .background_gradient(subset=["CA-125"], cmap="Reds")
-            .set_properties(**{"font-size": "13px"}),
-        use_container_width=True,
-        hide_index=True
-    )
-
-    # ── Biomarker averages ─────────────────────────────────────────────────────
-    st.markdown("<div class='section-title'>📊 Average Biomarkers by Risk Group</div>", unsafe_allow_html=True)
-
-    bio_cols = ["glucose", "bmi", "haemoglobin", "wbc", "ca_125"]
-    avg = latest.groupby("label")[bio_cols].mean().round(2)
-    avg.index = ["Low Risk (0)", "High Risk (1)"]
-    avg.columns = ["Glucose", "BMI", "Haemoglobin", "WBC", "CA-125"]
-
-    st.dataframe(
-        avg.style
-            .background_gradient(cmap="RdYlGn_r", axis=0)
-            .format("{:.2f}")
-            .set_properties(**{"font-size": "13px"}),
-        use_container_width=True
-    )
-
-elif not data_ok:
-    st.warning("⚠️ Could not load `vardaan_raw.csv`. Make sure the file is in the project root.", icon="⚠️")
-
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("<hr>", unsafe_allow_html=True)
