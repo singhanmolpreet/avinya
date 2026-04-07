@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+from core.data import load_features
+from core.model import predict_all
 
 st.set_page_config(
     page_title="Vardaan AI",
@@ -124,33 +126,19 @@ hr { border: none; border-top: 1px solid rgba(0,0,0,0.07); margin: 24px 0; }
 """, unsafe_allow_html=True)
 
 
-# ── Data helpers ──────────────────────────────────────────────────────────────
-@st.cache_data
-def load_raw():
-    return pd.read_csv("vardaan_raw.csv")
-
-
-def compute_stats(df: pd.DataFrame):
-    """Return per-patient summary using the latest year's label."""
-    latest = df.sort_values("year").groupby("patient_id").last().reset_index()
-    total = len(latest)
-    high  = int((latest["label"] == 1).sum())
-    low   = total - high
-    rate  = round(high / total * 100, 1) if total else 0
-    return total, high, low, rate, latest
+df = load_features()
+df = predict_all(df)
 
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 try:
-    raw = load_raw()
-    total, high_risk, low_risk, risk_rate, latest = compute_stats(raw)
+    total, high_risk, low_risk= len(df), len(df[df["risk_tier"]=="HIGH RISK 🔴"]), len(df[df["risk_tier"]=="LOW RISK 🟢"]) 
     data_ok = True
 except FileNotFoundError:
     data_ok  = False
     total = high_risk = low_risk = 0
     risk_rate = 0.0
-    latest = pd.DataFrame()
-
+    
 
 # ── Hero Header ───────────────────────────────────────────────────────────────
 st.markdown("""
@@ -164,7 +152,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 
 # ── KPI Cards ─────────────────────────────────────────────────────────────────
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3 = st.columns(3)
 
 with c1:
     st.markdown(f"""
@@ -190,13 +178,6 @@ with c3:
       <div class="metric-sub">Normal patients</div>
     </div>""", unsafe_allow_html=True)
 
-with c4:
-    st.markdown(f"""
-    <div class="metric-card rate">
-      <div class="metric-label">Risk Rate</div>
-      <div class="metric-value">{risk_rate}%</div>
-      <div class="metric-sub">High-risk proportion</div>
-    </div>""", unsafe_allow_html=True)
 
 
 # ── Quick navigation ──────────────────────────────────────────────────────────
