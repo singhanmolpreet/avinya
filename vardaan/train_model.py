@@ -1,6 +1,8 @@
 from xgboost import XGBClassifier
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+import joblib
 
 df=pd.read_csv("vardaan_features.csv")
 
@@ -17,6 +19,9 @@ Y=df["label"]
 
 X_train, X_test, Y_train, Y_test=train_test_split(X, Y, train_size=0.2, random_state=42)
 
-print(X_train.shape)
-print(X_test.shape)
-print(X_test)
+# print(X_train.shape)
+# print(X_test.shape)
+# print(X_test)
+
+model.fit(X_train,Y_train)
+
