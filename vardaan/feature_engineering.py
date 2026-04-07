@@ -24,5 +24,7 @@ for pid, group in df.groupby("patient_id"):
     rows.append(row)
     
 features_df=pd.DataFrame(rows)
+# print(features_df.shape)
+# print(features_df.head(2))
 
-df.to_csv("vardaan_features.csv")
+features_df.to_csv("vardaan_features.csv")
