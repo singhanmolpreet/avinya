@@ -3,7 +3,11 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue) ![XGBoost](https://img.shields.io/badge/Model-XGBoost-orange) ![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-red) ![SHAP](https://img.shields.io/badge/Explainability-SHAP-green)
 
----
+## To run
+```bash
+cd vardaan
+streamlit run app.py
+```
 
 ## The Core Insight
 
