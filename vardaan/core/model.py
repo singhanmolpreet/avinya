@@ -5,7 +5,7 @@ import numpy as np
 
 FEATURE_COLS = [
     'glucose_first','glucose_mean','glucose_std','glucose_slope',
-    'hemoglobin_first','hemoglobin_mean','hemoglobin_std','hemoglobin_slope',
+    'haemoglobin_first','haemoglobin_mean','haemoglobin_std','haemoglobin_slope',
     'wbc_first','wbc_mean','wbc_std','wbc_slope',
     'bmi_first','bmi_mean','bmi_std','bmi_slope',
     'ca_125_first','ca_125_mean','ca_125_std','ca_125_slope'
