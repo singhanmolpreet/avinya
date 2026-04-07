@@ -27,4 +27,4 @@ features_df=pd.DataFrame(rows)
 # print(features_df.shape)
 # print(features_df.head(2))
 
-features_df.to_csv("vardaan_features.csv")
+features_df.to_csv("vardaan_features.csv", index=False)
